@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>云雀科技 - 让数据产生洞察</title>
+  <!--
+    ╔════════════════════════════════════════════════════════════╗
+    ║ 这是一个模拟的「第三方网站」（云雀科技官网假想页面）          ║
+    ║ 与 AI 平台完全无关的独立站点，仅通过底部一行 script 接入对话  ║
+    ╚══════════════════════════════════════════════════════════════╝
+  -->
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #1F2937; background: #fff; }
+    a { text-decoration: none; color: inherit; }
+
+    /* 顶部导航 */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 18px 8%; background: #fff; border-bottom: 1px solid #EEF0F3; position: sticky; top: 0; z-index: 10; }
+    .logo { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700; color: #0F172A; }
+    .logo-mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, #0EA5E9, #6366F1); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .nav-links { display: flex; gap: 30px; font-size: 14px; color: #64748B; }
+    .nav-links a:hover { color: #0EA5E9; }
+    .nav-cta { background: #0EA5E9; color: #fff; padding: 8px 18px; border-radius: 8px; font-size: 13.5px; }
+
+    /* Hero */
+    .hero { padding: 90px 8% 80px; background: linear-gradient(180deg, #F8FAFC 0%, #fff 100%); text-align: center; }
+    .hero h1 { font-size: 40px; line-height: 1.3; color: #0F172A; }
+    .hero h1 em { font-style: normal; color: #0EA5E9; }
+    .hero p { margin: 18px auto 0; max-width: 560px; font-size: 16px; color: #64748B; line-height: 1.8; }
+    .hero-actions { margin-top: 30px; display: flex; gap: 14px; justify-content: center; }
+    .btn { padding: 12px 26px; border-radius: 10px; font-size: 14.5px; border: none; cursor: pointer; }
+    .btn-primary { background: #0EA5E9; color: #fff; }
+    .btn-primary:hover { background: #0284C7; }
+    .btn-ghost { background: #fff; color: #334155; border: 1px solid #E2E8F0; }
+
+    /* 数据带 */
+    .stats-band { display: flex; justify-content: center; gap: 70px; padding: 40px 8%; background: #0F172A; color: #fff; }
+    .stat { text-align: center; }
+    .stat b { display: block; font-size: 28px; color: #38BDF8; }
+    .stat span { font-size: 13px; color: #94A3B8; }
+
+    /* 产品特性 */
+    .features { padding: 80px 8%; max-width: 1080px; margin: 0 auto; }
+    .section-title { text-align: center; font-size: 26px; color: #0F172A; }
+    .section-sub { text-align: center; font-size: 14.5px; color: #64748B; margin: 10px 0 44px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .feature { border: 1px solid #EEF0F3; border-radius: 14px; padding: 26px 22px; }
+    .feature:hover { border-color: #BAE6FD; box-shadow: 0 8px 26px rgba(14,165,233,.08); }
+    .feature-icon { width: 40px; height: 40px; border-radius: 10px; background: #E0F2FE; color: #0284C7; display: flex; align-items: center; justify-content: center; font-size: 19px; margin-bottom: 14px; }
+    .feature h3 { font-size: 15.5px; color: #0F172A; margin-bottom: 8px; }
+    .feature p { font-size: 13px; color: #64748B; line-height: 1.75; }
+
+    /* 页脚 */
+    .footer { margin-top: 40px; border-top: 1px solid #EEF0F3; padding: 26px 8%; text-align: center; font-size: 12.5px; color: #94A3B8; }
+
+    @media (max-width: 720px) {
+      .hero h1 { font-size: 28px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-band { gap: 34px; flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="logo"><span class="logo-mark">云</span>云雀科技</div>
+    <div class="nav-links">
+      <a href="#">产品</a><a href="#">解决方案</a><a href="#">开发者</a><a href="#">关于我们</a>
+    </div>
+    <a class="nav-cta" href="#">免费试用</a>
+  </nav>
+
+  <section class="hero">
+    <h1>让数据产生<em>洞察</em>，<br/>让决策快人一步</h1>
+    <p>云雀科技为企业提供一站式数据智能平台：从数据接入、实时分析到可视化呈现，30 分钟完成从原始数据到业务决策的全链路。</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary">立即体验</button>
+      <button class="btn btn-ghost">预约演示</button>
+    </div>
+  </section>
+
+  <section class="stats-band">
+    <div class="stat"><b>3,200+</b><span>企业客户</span></div>
+    <div class="stat"><b>99.99%</b><span>服务可用性</span></div>
+    <div class="stat"><b>8.5 亿</b><span>日均处理事件</span></div>
+    <div class="stat"><b>12 项</b><span>行业安全认证</span></div>
+  </section>
+
+  <section class="features">
+    <h2 class="section-title">核心能力</h2>
+    <p class="section-sub">从数据到决策，一个平台完成全部工作</p>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h3>实时数据管道</h3>
+        <p>秒级接入 40+ 数据源，内置清洗转换规则，异常数据自动隔离与告警，数据质量一目了然。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>智能分析引擎</h3>
+        <p>自然语言提问即出分析结论，自动识别趋势与异常点，常用报表一句话生成，业务同学零门槛。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h3>企业级安全</h3>
+        <p>细粒度权限与数据脱敏，全链路审计日志，支持私有化部署，满足金融与政企合规要求。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    © 2026 云雀科技有限公司 · 沪ICP备00000000号 · 本页面为第三方接入演示页面
+  </footer>
+
+  <!-- ═══════════════ 唯一的接入代码（就这一行） ═══════════════
+       src 使用平台绝对地址（第三方页面与平台不同源）
+       data-app-key 换成应用密钥管理里生成的真实密钥          -->
+  <script src="http://localhost:5173/embed/widget.js" data-app-key="sk_emb_305963379365e943a646a77c0551393dfefd" defer></script>
+
+</body>
+</html>

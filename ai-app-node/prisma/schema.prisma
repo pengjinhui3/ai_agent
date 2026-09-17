@@ -1,0 +1,277 @@
+// ai-app-node Prisma schema锛氭槧灏?ai_app 搴撶幇鏈?19 琛紙闆惰縼绉烩€斺€旇〃缁撴瀯涓嶅姩锛屽彧璇绘槧灏勶級
+// 鍒绘剰涓嶇敤 @updatedAt锛圝ava 渚х鐞嗘椂闂存埑锛夛紱杞垹瀛楁鎸?Java 渚ц涔夊０鏄?
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- 鍘傚晢涓庢ā鍨?----------
+
+model AiProvider {
+  id          Int      @id @default(autoincrement())
+  providerCode String   @unique @map("provider_code")
+  name        String
+  protocol    String
+  baseUrl     String   @map("base_url")
+  apiKey      String   @map("api_key")
+  maxTokens   Int?     @map("max_tokens")
+  enabled     Boolean  @default(true)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  models AiModel[]
+
+  @@map("ai_provider")
+}
+
+model AiModel {
+  id             Int      @id @default(autoincrement())
+  modelCode      String   @map("model_code")
+  name           String
+  providerCode   String   @map("provider_code")
+  thinkingEffort String?  @map("thinking_effort")
+  enabled        Boolean  @default(false)
+  createTime     DateTime @map("create_time") @db.DateTime(0)
+  updateTime     DateTime @map("update_time") @db.DateTime(0)
+  delFlag        String   @default("0") @map("del_flag")
+
+  provider AiProvider @relation(fields: [providerCode], references: [providerCode])
+  apps     AiApp[]
+
+  @@unique([providerCode, modelCode])
+  @@map("ai_model")
+}
+
+// ---------- 搴旂敤 ----------
+
+model AiApp {
+  id           Int      @id @default(autoincrement())
+  appCode      String   @unique @map("app_code")
+  name         String
+  modelId      Int      @map("model_id")
+  systemPrompt String?  @map("system_prompt")
+  mcpTools     String?  @map("mcp_tools")
+  skills       String?  @map("skills")
+  enabled      Boolean  @default(true)
+  createTime   DateTime @map("create_time") @db.DateTime(0)
+  updateTime   DateTime @map("update_time") @db.DateTime(0)
+  delFlag      String   @default("0") @map("del_flag")
+
+  model             AiModel @relation(fields: [modelId], references: [id])
+  conversations     AiConversation[]
+
+  @@map("ai_app")
+}
+
+// ---------- 浼氳瘽涓庢秷鎭?----------
+
+model AiConversation {
+  id             Int      @id @default(autoincrement())
+  appCode        String   @map("app_code")
+  conversationId String   @unique @map("conversation_id")
+  title          String
+  summary        String?  @db.Text
+  summaryUptoId  Int?     @map("summary_upto_id")
+  reserve2       String?  @db.VarChar(64)   // 嵌出来源 app-key（16 方案：溯源与隔离）
+  mode           String?  @db.VarChar(32)    // 系统指令模式标记（15 号：@ 进入写入/sink 完成清除/续跑轮据此保持注入）
+  createTime     DateTime @map("create_time") @db.DateTime(0)
+  updateTime     DateTime @map("update_time") @db.DateTime(0)
+  delFlag        String   @default("0") @map("del_flag")
+
+  app     AiApp       @relation(fields: [appCode], references: [appCode])
+  messages AiMessage[]
+
+  @@map("ai_conversation")
+}
+
+model AiAtCommand {
+  id           BigInt   @id @default(autoincrement())
+  triggerCode  String   @unique @map("trigger_code") @db.VarChar(64)
+  label        String   @db.VarChar(128)
+  description  String?  @db.VarChar(500)
+  targetType   String   @default("mode") @map("target_type") @db.VarChar(20)
+  targetCode   String?  @map("target_code") @db.VarChar(64)
+  sort         Int      @default(0)
+  enabled      Boolean  @default(true)
+  createTime   DateTime @map("create_time") @db.DateTime(0)
+  updateTime   DateTime @map("update_time") @db.DateTime(0)
+  delFlag      String   @default("0") @map("del_flag")
+
+  @@map("ai_at_command")
+}
+
+model AiMessage {
+  id             Int      @id @default(autoincrement())
+  conversationId Int      @map("conversation_id")
+  messageId      String   @map("message_id")
+  question       String?  @db.Text
+  contentBlocks  String?  @map("content_blocks") @db.Text
+  answerPure     String?  @map("answer_pure") @db.Text
+  toolCallsJson  String?  @map("tool_calls_json") @db.MediumText // 工具调用记录（15 号起技能全文参数较大，mediumtext 防超长）
+  mediaJson      String?  @map("media_json") @db.Text
+  attachments    String?  @db.VarChar(2000)
+  success        Boolean?
+  errorMessage   String?  @map("error_message") @db.Text
+  createTime     DateTime @map("create_time") @db.DateTime(0)
+
+  conversation AiConversation @relation(fields: [conversationId], references: [id])
+
+  @@index([conversationId])
+  @@map("ai_message")
+}
+
+// ---------- MCP ----------
+
+model AiMcpServer {
+  id          Int      @id @default(autoincrement())
+  serverCode  String   @unique @map("server_code")
+  name        String
+  type        String   @default("sse")
+  url         String?
+  headers     String?  @db.Text
+  command     String?
+  args        String?  @db.Text
+  env         String?  @db.Text
+  enabled     Boolean  @default(false)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  @@map("ai_mcp_server")
+}
+
+// ---------- Skill ----------
+
+model AiSkill {
+  id          Int      @id @default(autoincrement())
+  skillCode   String   @unique @map("skill_code")
+  name        String
+  content     String   @db.MediumText
+  description String?  @db.VarChar(1024)
+  enabled     Boolean  @default(true)
+  skillType   String?  @map("skill_type") @db.VarChar(20)
+  reserve1    String?  @map("reserve1") @db.VarChar(512)
+  reserve2    String?  @map("reserve2") @db.VarChar(512)
+  reserve3    String?  @map("reserve3") @db.VarChar(512)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  @@map("ai_skill")
+}
+
+// ---------- 瀛楀吀 ----------
+
+model AiDictType {
+  dictId      Int      @id @default(autoincrement()) @map("dict_id")
+  dictType    String   @unique @map("dict_type")
+  dictName    String   @map("dict_name")
+  remark      String?  @db.VarChar(500)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  data AiDictData[]
+
+  @@map("ai_dict_type")
+}
+
+model AiDictData {
+  dictCode    Int      @id @default(autoincrement()) @map("dict_code")
+  dictType    String   @map("dict_type")
+  dictLabel   String   @map("dict_label")
+  dictValue   String?  @map("dict_value")
+  isDefault   String?  @map("is_default")
+  sort        Int      @default(0)
+  remark      String?  @db.VarChar(500)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  type AiDictType @relation(fields: [dictType], references: [dictType])
+
+  @@map("ai_dict_data")
+}
+
+// ---------- 绯荤粺閰嶇疆 ----------
+
+model AiSysConfig {
+  configId    Int      @id @default(autoincrement()) @map("config_id")
+  configName  String   @map("config_name")
+  configKey   String   @unique @map("config_key")
+  configValue String?  @map("config_value") @db.VarChar(500)
+  isBuiltin   Boolean  @default(false) @map("is_builtin")
+  remark      String?  @db.VarChar(500)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  @@map("ai_sys_config")
+}
+
+// ---------- 鍐呯疆宸ュ叿 ----------
+
+model AiBuiltinTool {
+  id          Int      @id @default(autoincrement())
+  toolCode    String   @unique @map("tool_code")
+  name        String
+  description String?  @db.VarChar(1024)
+  enabled     Boolean  @default(true)
+  required    Boolean  @default(false)
+  source      String?  @db.VarChar(20)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  @@map("ai_builtin_tool")
+}
+
+// ---------- Agent 浠诲姟锛?7_1 闃舵 A锛氱姸鎬佹満鍩虹锛宎ck 浜烘満鍗忓悓涓洪涓満鏅級 ----------
+
+model AiAgentTask {
+  id             Int      @id @default(autoincrement())
+  taskId         String   @unique @map("task_id") @db.VarChar(50)
+  appCode        String   @map("app_code") @db.VarChar(64)
+  conversationPk Int?     @map("conversation_pk")
+  messageId      String?  @map("message_id") @db.VarChar(50)
+  goal           String   @db.Text
+  status         String   @default("pending") @db.VarChar(20)
+  planJson       String?  @map("plan_json") @db.Text
+  result         String?  @db.Text
+  stepCursor     Int      @default(0) @map("step_cursor")
+  ackStatus      String?  @map("ack_status") @db.VarChar(20)
+  ackPayload     String?  @map("ack_payload") @db.Text
+  errorMessage   String?  @map("error_message") @db.Text
+  createTime     DateTime @map("create_time") @db.DateTime(0)
+  updateTime     DateTime @map("update_time") @db.DateTime(0)
+  delFlag        String   @default("0") @map("del_flag")
+
+  @@index([appCode])
+  @@index([conversationPk])
+  @@map("ai_agent_task")
+}
+
+// ---------- 应用嵌出（16 方案：app-key 授权） ----------
+
+model AiAppKey {
+  id          Int      @id @default(autoincrement())
+  appKey      String   @unique @map("app_key")
+  appCode     String   @map("app_code") @db.VarChar(64)
+  name        String   @db.VarChar(128)
+  domains     String?  @db.VarChar(1024)   // 域名白名单 JSON 数组（空=不限）
+  dailyQuota  Int?     @map("daily_quota")
+  expireTime  DateTime? @map("expire_time")
+  enabled     Boolean  @default(true)
+  createTime  DateTime @map("create_time") @db.DateTime(0)
+  updateTime  DateTime @map("update_time") @db.DateTime(0)
+  delFlag     String   @default("0") @map("del_flag")
+
+  @@index([appCode])
+  @@map("ai_app_key")
+}

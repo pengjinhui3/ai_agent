@@ -1,0 +1,55 @@
+# 构建产物
+target/
+
+# 工作区本地 Maven 仓库（沙箱内缓存，见 .mvn/maven.config）
+.m2/
+schema.sql
+ai-app-node/node_modules
+
+# IDE
+.idea/
+.probe/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# 日志与排障临时文件
+*.log
+logs*/
+test-*.txt
+probe-out*.txt
+*-sse.txt
+request-dump.json
+smoke*.json
+strict-out*.txt
+
+# AgentTeams 团队状态（会话产物，不入库）
+.agent-teams/
+
+# 系统文件
+Thumbs.db
+.DS_Store
+docs/*.visual-check.*
+
+# codegraph 本地索引（代码图谱工具，不进库）
+.codegraph/
+
+# ��������Ŀ¼������ʱ���ݣ������⣩
+uploads/
+ai-app-node/dist/
+
+# 本地环境产物目录（数据库 DDL 快照等，永不提交，仅本地保留）
+local/
+
+# 方案设计文档（本地工作副本，永不提交；完整档案在桌面 docs）
+docs/
+ai-app-node/docs/
+
+# Java �������Java ���Ѷ����� java ��֧��node ��֧���ٱ�����
+target/
+
+# 敏感配置与数据（2026-09-17 公开前清除）
+.env
+seed-server.sql
